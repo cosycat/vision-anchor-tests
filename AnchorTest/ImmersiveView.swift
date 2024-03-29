@@ -15,16 +15,36 @@ import RealityKitContent
 struct ImmersiveView: View {
     
     @State var planeHandler: PlaneHandler? = nil
+    @StateObject var viewModel = ImmersiveViewModel()
+    
+    @State var rootEntity: Entity?
     
     var body: some View {
         RealityView { content in
             // Add the initial RealityKit content
+            
             if let scene = try? await Entity(named: "Immersive", in: realityKitContentBundle) {
-                content.add(scene)
+                let anchor = AnchorEntity(.head)
+                anchor.anchoring.trackingMode = .continuous
+                scene.setParent(anchor)
+                content.add(anchor)
+
+                // Z offset is important
+                scene.transform.translation.z = -1.0
+                scene.transform.translation.y = 0
+                anchor.name = "Head Anchor"
+                print(content)
             }
-            let rootPlane = Entity()
-            planeHandler = PlaneHandler(rootEntity: rootPlane)
-            content.add(rootPlane)
+            let rootEntity = Entity()
+            content.add(rootEntity)
+            self.rootEntity = rootEntity
+            
+//            planeHandler = PlaneHandler(rootEntity: rootPlane)
+//            content.add(rootPlane)
+        }
+        .task {
+//            await viewModel.processReconstructionUpdates()
+//            await viewModel.processPlaneData(rootEntity: )
         }
     }
     

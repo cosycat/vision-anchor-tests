@@ -11,7 +11,7 @@ import SwiftUI
 struct AnchorTestApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LaunchWindow()
         }
 
         ImmersiveSpace(id: "ImmersiveSpace") {

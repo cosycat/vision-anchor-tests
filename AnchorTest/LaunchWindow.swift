@@ -9,7 +9,7 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
-struct ContentView: View {
+struct LaunchWindow: View {
 
     @State private var showImmersiveSpace = false
     @State private var immersiveSpaceIsShown = false
@@ -19,8 +19,18 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            Model3D(named: "Scene", bundle: realityKitContentBundle)
-                .padding(.bottom, 50)
+            Model3D(named: "Scene", bundle: realityKitContentBundle) { phase in
+                switch phase {
+                    case .empty:
+                        Text("Loading...")
+                    case .success(let model):
+                        model.padding(.bottom, 50)
+                    case .failure(let error):
+                        Text("Error: \(error.localizedDescription)")
+                @unknown default:
+                    Text("Unknown")
+                }
+            }
 
             Text("Hello, world!")
 
@@ -53,5 +63,5 @@ struct ContentView: View {
 }
 
 #Preview(windowStyle: .automatic) {
-    ContentView()
+    LaunchWindow()
 }
